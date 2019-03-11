@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/re-cashflow-calculator/precache-manifest.c1db541493b90d6cb0f546d87added9b.js"
+  "/re-cashflow-calculator/precache-manifest.92c8a2645515e4db640823ad16a7dad6.js"
 );
 
 workbox.clientsClaim();
