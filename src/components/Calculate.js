@@ -2,19 +2,23 @@ import React from 'react'
 import Loading from './Loading'
 import {calculateCashflow} from '../util/index'
 
-console.log('test function')
-console.log(calculateCashflow(20000, 12000, 3000, 2, 20, 20000))
-const yearsOfData = calculateCashflow(20000, 12000, 3000, 2, 20, 20000)
 
-class CampusAdd extends React.Component {
+
+class Calculate extends React.Component {
   constructor () {
     super()
     this.state = {
-      name: '',
-      imageURL: '',
-      address: '',
-      description: '',
-      loading: true
+      
+
+      startingSavings: '',
+      savingPerYear: '',
+      cashflowPerHouse: '',
+      houseCount: '',
+      numYears: '',
+      cashDownPerHouse: '',
+
+      loading: true,
+      yearsArr: []
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -26,22 +30,27 @@ class CampusAdd extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     })
+    console.log(this.state.houseCount)
   }
   async handleSubmit (event) {
     event.preventDefault()
-    try {
-      this.props.postCampus(this.state)
-    } catch (err){
-      console.log(err)
-    }
+    const {startingSavings, savingPerYear, cashflowPerHouse, houseCount, numYears, cashDownPerHouse} = this.state;
+    const newYearsArr = calculateCashflow(startingSavings, savingPerYear, cashflowPerHouse, houseCount, numYears, cashDownPerHouse)
+    console.log(newYearsArr)
     this.setState({
-      name: '',
-      imageURL: '',
-      address: '',
-      description: ''
+      
+
+      startingSavings: '',
+      savingPerYear: '',
+      cashflowPerHouse: '',
+      houseCount: '',
+      numYears: '',
+      cashDownPerHouse: '',
+      yearsArr: newYearsArr
     })
   }
   render () {
+    console.log(this.state.yearsArr)
     if (this.state.loading) {
       return (
         <Loading />
@@ -50,14 +59,14 @@ class CampusAdd extends React.Component {
     return (
       <div>
 
-        <div>
-        {yearsOfData.map(year => (
+        {this.state.yearsArr.length 
+          ? ( this.state.yearsArr.map(year => (
             <div className="row h5" key={year.currYear}>
               <div className="col text-center">Current Cash: 
                 ${year.currCash}
               </div>
               <div className="col text-center">House Count: 
-                ${year.houseCount}
+                {year.houseCount}
               </div>
               <div className="col text-center">Portfolio Value: 
                 ${year.portfolioValue}
@@ -65,62 +74,88 @@ class CampusAdd extends React.Component {
               <div className="col text-center">Annual Real Estate Cash Flow at end of year {year.currYear}: ${year.annualRealEstateCashFlow}
               </div>
             </div>
-            ))
-          }
-        </div>
-        <h3>Add a Campus:</h3>
+            )))
+          : ''
+        }
+          
+        <h3>Calculate Your Cashflow</h3>
         <form onSubmit={this.handleSubmit}>
           <div className="container-fluid justify-content-center">
             <div className="row h3">
               <div className="col text-center">
-                <label htmlFor="name">Name: </label>
+                <label htmlFor="startingSavings">startingSavings: </label>
               </div>
               <div className="col text-center">
-                <input type="text" name="name" placeholder="Enter campus name" value={this.state.name} onChange={this.handleChange} />
+                <input type="text" name="startingSavings" placeholder="Enter startingSavings" value={this.state.startingSavings} onChange={this.handleChange} />
               </div>
               <div className="col text-center">
-                {this.state.name === '' ? <span className="alert alert-warning" role="alert">Required</span> : ''}
+                
               </div>
             </div>
             <div className="row h3">
               <div className="col text-center">
-                <label htmlFor="address">Address: </label>
+                <label htmlFor="savingPerYear">savingPerYear: </label>
               </div>
               <div className="col text-center">
-                <input type="text" name="address" placeholder="Enter campus address" value={this.state.address} onChange={this.handleChange} />
+                <input type="text" name="savingPerYear" placeholder="Enter savingPerYear" value={this.state.savingPerYear} onChange={this.handleChange} />
               </div>
               <div className="col text-center">
-                {this.state.address === '' ? <span className="alert alert-warning" role="alert">Required</span> : ''}
+                {this.state.savingPerYear === '' ? <span className="alert alert-warning" role="alert">(Apart from RE Investing)</span> : ''}
               </div>
             </div>
             <div className="row h3">
               <div className="col text-center">
-                <label htmlFor="description">Description: </label>
+                <label htmlFor="cashflowPerHouse">cashflowPerHouse: </label>
               </div>
               <div className="col text-center">
-                <input type="text" name="description" placeholder="Enter campus description" value={this.state.description} onChange={this.handleChange} />
+                <input type="text" name="cashflowPerHouse" placeholder="Enter cashflowPerHouse" value={this.state.cashflowPerHouse} onChange={this.handleChange} />
               </div>
               <div className="col text-center">
-                {this.state.description === '' ? <span className="note">Optional, but we'd love a description.</span> : ''}
+                {this.state.cashflowPerHouse === '' ? <span className="alert alert-warning">(Net you expect to make)</span> : ''}
               </div>
             </div>
             <div className="row h3">
               <div className="col text-center">
-                <label htmlFor="imageURL">Image URL: </label>
+                <label htmlFor="houseCount">houseCount: </label>
               </div>
               <div className="col text-center">
-                <input type="text" name="imageURL" placeholder="Enter campus image URL" value={this.state.imageURL} onChange={this.handleChange} />
+                <input type="text" name="houseCount" placeholder="Enter houseCount" value={this.state.houseCount} onChange={this.handleChange} />
               </div>
               <div className="col text-center">
-                {this.state.imageURL === '' ? <span className="note">We'll choose one for you if you don't.</span> : ''}
+                
               </div>
             </div>
+            <div className="row h3">
+              <div className="col text-center">
+                <label htmlFor="numYears">numYears: </label>
+              </div>
+              <div className="col text-center">
+                <input type="text" name="numYears" placeholder="Enter numYears" value={this.state.numYears} onChange={this.handleChange} />
+              </div>
+              <div className="col text-center">
+                
+              </div>
+            </div>
+            <div className="row h3">
+              <div className="col text-center">
+                <label htmlFor="cashDownPerHouse">cashDownPerHouse: </label>
+              </div>
+              <div className="col text-center">
+                <input type="text" name="cashDownPerHouse" placeholder="Enter cashDownPerHouse" value={this.state.cashDownPerHouse} onChange={this.handleChange} />
+              </div>
+              <div className="col text-center">
+                
+              </div>
+            </div>
+            
           </div>
           <button type="submit" className="btn btn-primary">Add Campus</button>
         </form>
+      
+        
       </div>
     )
   }
 }
 
-export default CampusAdd
+export default Calculate
